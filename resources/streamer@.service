@@ -1,0 +1,12 @@
+[Unit]
+Description=uStreamer service %i
+After=network.target
+
+[Service]
+User=%USER%
+ExecStart=/home/%USER%/streamer/run.sh /dev/%I
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

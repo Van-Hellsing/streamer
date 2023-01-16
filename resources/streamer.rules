@@ -1,0 +1,1 @@
+KERNEL=="video*", SUBSYSTEM=="video4linux", SUBSYSTEMS=="usb", ENV{ID_V4L_CAPABILITIES}=="*:capture:*", TAG+="systemd", ENV{SYSTEMD_WANTS}="streamer@%k.service"

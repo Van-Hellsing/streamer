@@ -1,0 +1,4 @@
+webcam_*
+ustreamer*
+run.sh
+!resources/run.sh

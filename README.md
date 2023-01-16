@@ -5,5 +5,7 @@
 При обнаружении новой камеры в папке streamer создаётся файл настроек, webcam_<port>_<cam_name>_<by-path>, содержащий минимум настроек. В папке настроек принтера/принтеров создаются ссылки на файлы настроек камеры.
 
 git clone https://github.com/Van-Hellsing/streamer.git
+  
 cd streamer
+  
 ./start.sh

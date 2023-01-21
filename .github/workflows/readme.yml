@@ -17,4 +17,8 @@ jobs:
       - name: Adding README - English
         uses: Van-Hellsing/streamer@master
         with:
+          LANG: ru
+      - name: Adding README - Chinese Traditional
+        uses: dephraiim/translate-readme@main
+        with:
           LANG: en

@@ -1,12 +1,7 @@
 #!/bin/sh
 
-#cfg_dir="/home/%USER%/printer_data/config"
-cfg_dir="/home/%USER%/streamer"
+cfg_dir="/home/%USER%/streamer/webcam_config"
 multi_instance_names=$(grep multi_* ${HOME}/.kiauh.ini|awk -F'=' '{print $2}'|sed 's/,/ /g')
-
-if [ -z ${multi_instance_names} ]; then
-    multi_instance_names=${HOME}/printer
-fi
 
 cam_id=$(udevadm info --query=all --name=$1|grep ID_SERIAL=|awk -F= '{print $2}')
 cam_path=$(udevadm info --query=all --name=$1|grep ID_PATH_|awk -F= '{print $2}')
@@ -44,11 +39,6 @@ else
 --host=0.0.0.0
 --format YUYV
 EOF
-    for i in ${multi_instance_names}
-    do
-	chmod 666 ${cfg_dir}/${cam_cfg}
-        ln -sf "/home/${USER}/streamer/${cam_cfg}" "${i}_data/config"
-    done
 fi
 
 port=$(echo ${cam_cfg}|awk -F_ '{print $2}')

@@ -6,6 +6,7 @@ systemd="/etc/systemd/system"
 udev="/etc/udev/rules.d"
 
 app_home="${HOME}/streamer"
+cfg_dir="webcam_config"
 resources="${app_home}/resources"
 run="run.sh"
 rules="streamer.rules"
@@ -62,6 +63,12 @@ function install_streamer() {
   mv /tmp/ustreamer* ${app_home}
   ok_msg "Compiling complete!"
   status_msg "Installing streamer ..."
+
+  ### create cfg_dir
+  status_msg "Create config dir ..."
+  mkdir -p "${app_home}/${cfg_dir}"
+  cfg_link
+  ok_msg "Config dir - OK"
 
   ### create udev rules usb cam
   status_msg "Creating streamer udev rules ..."
@@ -148,46 +155,54 @@ function remove_streamer() {
     rm -f "${app_home}/run.sh"
     ok_msg "uStreamer removed!"
   fi
-
+  rm_cfg_link
   print_confirm "Streamer successfully removed!"
 }
 
 #=====
 
-function rm_cfg(){
+function printer_names(){
   multi_instance_names=$(grep multi_ ${HOME}/.kiauh.ini|awk -F'=' '{print $2}'|sed 's/,/ /g')
   if [ -z "${multi_instance_names}" ]; then
     multi_instance_names="printer"
   fi
+}
+
+function rm_cfg_link(){
+  printer_names	
   for i in ${multi_instance_names}; do
-    if [ ! -z "$(ls ${HOME}/${i}_data/config|grep webcam_)" ]; then
-      rm_file="$(ls ${HOME}/${i}_data/config|grep webcam_)"
+    if [ ! -e "${HOME}/${i}_data/config/${cfg_dir}" ]; then
       status_msg "Remove webcam config in ${i}_data..."
-      for ii in ${rm_file}; do
-        if [ -e ${ii} ]; then
-          echo "   Remove ${ii}"
-          rm -f ${HOME}/${i}_data/config/${ii}
-        fi
-      done
+      rm -f "${HOME}/${i}_data/config/${cfg_dir}"
       ok_msg "Remove webcam config in ${i}_data done"
     fi
   done
+}
 
-  if [ ! -z "$(ls ${app_home}|grep webcam_)" ]; then
-    rm_file="$(ls ${app_home}|grep webcam_)"
+function rm_cfg(){
+  if [ -d "${app_home}/${cfg_dir}" ]; then
+  #if [ ! -z "$(ls ${app_home}/${cfg_dir})" ]; then
     status_msg "Remove webcam config in streamer..."
+    rm_file="$(ls ${app_home}/${cfg_dir})"
     for i in ${rm_file}; do
-      if [ -e ${i} ]; then
-        echo "   Remove ${i}"
-        rm -f ${app_home}/${i}
-      fi
+      rm -f ${app_home}/${cfg_dir}/${i}
     done
     ok_msg "Remove webcam config in streamer done"
   fi
-    ok_msg "Remove done"
 }
 
 ### other
+
+function cfg_link(){
+  printer_names
+  for i in ${multi_instance_names}; do
+    if [ ! -z "${HOME}/${i}_data/config/${cfg_dir}" ]; then
+      status_msg "Create webcam config in ${i}_data..."
+      ln -sf "${app_home}/${cfg_dir}" "${HOME}/${i}_data/config"
+      ok_msg "Create webcam config in ${i}_data done"
+    fi
+  done
+}
 
 function services_action() {
   active_service=$(sudo systemctl list-units|grep streamer@|awk '{print $1}')

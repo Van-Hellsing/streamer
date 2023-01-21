@@ -2,7 +2,7 @@
 
 set -e
 
-source streamer.sh
+source ${HOME}/streamer/streamer.sh
 source ${HOME}/kiauh/scripts/globals.sh
 source ${HOME}/kiauh/scripts/utilities.sh
 

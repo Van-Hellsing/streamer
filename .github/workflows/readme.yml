@@ -19,6 +19,6 @@ jobs:
         with:
           LANG: ru
       - name: Adding README - Chinese Traditional
-        uses: dephraiim/translate-readme@main
+        uses: Van-Hellsing/streamer@master
         with:
           LANG: en
